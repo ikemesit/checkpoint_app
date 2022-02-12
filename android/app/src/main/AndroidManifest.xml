@@ -2,12 +2,13 @@
     package="com.example.checkpoint_app2">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
    <application
         android:label="checkpoint_app2"
         android:icon="@mipmap/ic_launcher">
        <meta-data android:name="com.google.android.geo.API_KEY"
-           android:value="AIzaSyAZFG96HiKqrob_ZpgYNONlG7PcdSa0xtQ"/>
+           android:value="AIzaSyDfYy9JovU1we00qR3PZQt3dx_imneouds"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

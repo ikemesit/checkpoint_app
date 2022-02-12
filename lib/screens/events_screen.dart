@@ -1,3 +1,4 @@
+import 'package:checkpoint_app2/checkpoint_theme.dart';
 import 'package:checkpoint_app2/controllers/event_controller.dart';
 import 'package:checkpoint_app2/controllers/user_controller.dart';
 import 'package:checkpoint_app2/screens/notifications_screen.dart';
@@ -20,16 +21,11 @@ class EventsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xfff2f3f8),
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Events',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: CheckpointTheme.darkTextTheme.headline4,
         ),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(LineIcons.wallet),
-            color: Colors.white,
-          ),
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -40,28 +36,33 @@ class EventsScreen extends StatelessWidget {
               );
             },
             icon: const Icon(LineIcons.bell),
-            color: Colors.white,
+            // color: Colors.white,
           ),
-          if (userController.isLoggedIn.value == true)
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        const UserProfileScreen(title: 'User Profile'),
-                  ),
-                );
-              },
-              icon: const CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/trophy1.jpg'),
-                  radius: 12.0),
-              color: Colors.white,
-            )
+          Obx(() {
+            if (userController.isLoggedIn.value == true) {
+              return IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          UserProfileScreen(title: 'User Profile'),
+                    ),
+                  );
+                },
+                icon: const CircleAvatar(
+                    backgroundImage: AssetImage('assets/images/trophy1.jpg'),
+                    radius: 12.0),
+                color: Colors.white,
+              );
+            } else {
+              return const Visibility(
+                child: Text('None'),
+                visible: false,
+              );
+            }
+          })
         ],
-        elevation: 2.0,
-        shadowColor: Colors.black,
-        backgroundColor: Colors.deepOrange,
       ),
       body: Obx(
         () {

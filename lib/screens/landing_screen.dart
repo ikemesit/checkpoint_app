@@ -87,7 +87,7 @@ class LandingScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const SignUpScreen(),
+                                builder: (context) => SignUpScreen(),
                               ),
                             );
                           },

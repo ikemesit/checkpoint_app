@@ -17,6 +17,7 @@ class EventController extends GetxController {
     List<CheckpointEvent>? events = await EventService.fetchEvents();
 
     if (events!.isNotEmpty) {
+      events.sort((a, b) => b.dDateTimeFrom.compareTo(a.dDateTimeFrom));
       eventsList.addAll(events);
       isLoading.value = false;
       update();

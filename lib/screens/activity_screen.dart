@@ -1,3 +1,4 @@
+import 'package:checkpoint_app2/checkpoint_theme.dart';
 import 'package:checkpoint_app2/controllers/user_controller.dart';
 import 'package:checkpoint_app2/screens/user_profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -14,16 +15,11 @@ class ActivityScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Activity',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: CheckpointTheme.darkTextTheme.headline4,
         ),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(LineIcons.wallet),
-            color: Colors.white,
-          ),
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -43,7 +39,7 @@ class ActivityScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        const UserProfileScreen(title: 'User Profile'),
+                        UserProfileScreen(title: 'User Profile'),
                   ),
                 );
               },
@@ -53,9 +49,6 @@ class ActivityScreen extends StatelessWidget {
               color: Colors.white,
             )
         ],
-        elevation: 2.0,
-        shadowColor: Colors.black,
-        backgroundColor: Colors.deepOrange,
       ),
     );
   }

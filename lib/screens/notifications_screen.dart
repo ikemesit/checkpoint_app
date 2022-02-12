@@ -3,6 +3,8 @@ import 'package:checkpoint_app2/controllers/notifications_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../checkpoint_theme.dart';
+
 class NotificationsScreen extends StatelessWidget {
   NotificationsScreen({Key? key}) : super(key: key);
   final notificationsController = Get.put(NotificationsController());
@@ -11,13 +13,10 @@ class NotificationsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Notifications',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: CheckpointTheme.darkTextTheme.headline4,
         ),
-        elevation: 2.0,
-        shadowColor: Colors.black,
-        backgroundColor: Colors.deepOrange,
       ),
       body: Obx(
         () => ListView.builder(

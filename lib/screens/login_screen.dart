@@ -1,25 +1,20 @@
 import 'package:checkpoint_app2/checkpoint_theme.dart';
-import 'package:checkpoint_app2/controllers/authentication_controller.dart';
 import 'package:checkpoint_app2/controllers/user_controller.dart';
 import 'package:checkpoint_app2/models/user.dart';
-import 'package:checkpoint_app2/screens/home_screen.dart';
-import 'package:checkpoint_app2/screens/user_profile_screen.dart';
+import 'package:checkpoint_app2/screens/forgot_password_screen.dart';
+import 'package:checkpoint_app2/screens/signup_screen.dart';
 import 'package:checkpoint_app2/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:line_icons/line_icons.dart';
-
-import 'notifications_screen.dart';
+import 'package:getwidget/colors/gf_color.dart';
+import 'package:getwidget/components/toast/gf_toast.dart';
+import 'package:getwidget/position/gf_toast_position.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final UserController userController = Get.put(UserController());
-  final AuthenticationController authController =
-      Get.put(AuthenticationController());
-  final store = GetStorage();
 
   String? _username;
   String? _password;
@@ -28,210 +23,184 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Event Detail',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        backgroundColor: Colors.white,
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          iconTheme: const IconThemeData(
+            color: Colors.black,
+          ),
+          actions: const [],
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          backgroundColor: Colors.white,
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(LineIcons.wallet),
-            color: Colors.white,
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NotificationsScreen(),
-                ),
-              );
-            },
-            icon: const Icon(LineIcons.bell),
-            color: Colors.white,
-          ),
-          if (userController.isLoggedIn.value == true)
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        const UserProfileScreen(title: 'User Profile'),
-                  ),
-                );
-              },
-              icon: const CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/trophy1.jpg'),
-                  radius: 12.0),
-              color: Colors.white,
-            )
-        ],
-        elevation: 2.0,
-        shadowColor: Colors.black,
-        backgroundColor: Colors.deepOrange,
-      ),
-      body: Obx(() {
-        if (userController.isLoggedIn.value == false) {
-          return Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                  colorFilter:
-                      ColorFilter.mode(Colors.blueGrey, BlendMode.multiply),
-                  fit: BoxFit.cover,
-                  image: AssetImage('assets/images/landing_bg.webp')),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 50.0),
+            child: Form(
+              key: _formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        const Center(
-                          child: Image(
-                            alignment: Alignment.center,
-                            width: 250,
-                            image: AssetImage('assets/images/logo.webp'),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.0, horizontal: 25.0),
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(36.0))),
-                            hintText: 'Enter your Username',
-                            errorStyle: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          validator: (String? value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Invalid username!';
-                            }
-                            return null;
-                          },
-                          onSaved: (String? value) {
-                            _username = value;
-                          },
-                        ),
-                        const SizedBox(
-                          height: 20.0,
-                        ),
-                        TextFormField(
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.0, horizontal: 25.0),
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(36.0))),
-                            hintText: 'Enter your password',
-                            errorStyle: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          validator: (String? value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Invalid password!';
-                            }
-                            return null;
-                          },
-                          onSaved: (String? value) {
-                            _password = value;
-                          },
-                        ),
-                        const SizedBox(
-                          height: 40.0,
-                        ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            final form = _formKey.currentState;
+                children: <Widget>[
+                  Text(
+                    'Login User',
+                    style: CheckpointTheme.lightTextTheme.headline2,
+                  ),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 25.0),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                      hintText: 'Enter your Username',
+                      errorStyle: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Invalid username!';
+                      }
+                      return null;
+                    },
+                    onSaved: (String? value) {
+                      _username = value;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
+                  TextFormField(
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 25.0),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                      hintText: 'Enter your password',
+                      errorStyle: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Invalid password!';
+                      }
+                      return null;
+                    },
+                    onSaved: (String? value) {
+                      _password = value;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 40.0,
+                  ),
+                  ElevatedButton(
+                    child: const Text(
+                      'Sign In',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                    onPressed: () async {
+                      final form = _formKey.currentState;
 
-                            if (form!.validate()) {
-                              form.save();
+                      FocusScopeNode currentFocus = FocusScope.of(context);
 
-                              showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (context) => const LoadingWidget(
-                                  stateText: 'Signing In',
-                                ),
-                              );
+                      if (!currentFocus.hasPrimaryFocus) {
+                        currentFocus.unfocus();
+                      }
 
-                              await userController.login(
-                                  _username as String, _password as String);
+                      if (form!.validate()) {
+                        form.save();
 
-                              Get.back();
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => const LoadingWidget(
+                            stateText: 'Signing In',
+                          ),
+                        );
 
-                              // if (authController.isLoggedIn.value == false) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(24),
-                                  ),
-                                  behavior: SnackBarBehavior.floating,
-                                  content: const Text('Wrong Credentials!'),
-                                  backgroundColor: Theme.of(context).errorColor,
-                                ),
-                              );
-                              // }
-                            }
+                        var user = await userController.login(
+                            _username as String, _password as String);
+
+                        if (user != null && user.isNotEmpty) {
+                          Navigator.pop(context);
+                          GFToast.showToast('Login Successful!', context,
+                              toastPosition: GFToastPosition.BOTTOM,
+                              textStyle: const TextStyle(
+                                  fontSize: 16,
+                                  color: GFColors.SUCCESS,
+                                  fontWeight: FontWeight.bold),
+                              backgroundColor: GFColors.DARK,
+                              toastBorderRadius: 8.0,
+                              trailing: const Icon(
+                                Icons.check,
+                                color: GFColors.SUCCESS,
+                              ));
+
+                          await Future.delayed(const Duration(seconds: 2), () {
+                            Navigator.pop(context);
+                          });
+                        } else {
+                          Navigator.pop(context);
+                          GFToast.showToast('Login Failed!', context,
+                              toastPosition: GFToastPosition.BOTTOM,
+                              textStyle: const TextStyle(
+                                  fontSize: 16,
+                                  color: GFColors.DANGER,
+                                  fontWeight: FontWeight.bold),
+                              backgroundColor: GFColors.DARK,
+                              toastBorderRadius: 8.0,
+                              trailing: const Icon(
+                                Icons.clear,
+                                color: GFColors.DANGER,
+                              ));
+                        }
+                      }
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Get.to(() => ForgotPasswordScreen(),
+                                fullscreenDialog: true);
                           },
-                          child: Text(
-                            'Login',
-                            textAlign: TextAlign.center,
-                            style: CheckpointTheme.darkTextTheme.headline6,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.transparent,
-                          ),
-                          onPressed: () {},
                           child: Text(
                             'Forgot Password?',
-                            textAlign: TextAlign.center,
-                            style: CheckpointTheme.darkTextTheme.headline6,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                      ],
-                    ),
+                            style: CheckpointTheme.lightTextTheme.bodyText1,
+                          )),
+                      TextButton(
+                          onPressed: () {
+                            Get.to(() => SignUpScreen(),
+                                fullscreenDialog: true);
+                          },
+                          child: Text(
+                            'Sign Up',
+                            style: CheckpointTheme.lightTextTheme.bodyText1,
+                          ))
+                    ],
                   )
                 ],
               ),
             ),
-          );
-        }
-
-        // userController.setUser(userData[0]);
-        Get.back(closeOverlays: true);
-        return const HomeScreen();
-      }),
-    );
+          ),
+        ));
   }
 }

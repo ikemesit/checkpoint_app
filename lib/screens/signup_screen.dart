@@ -1,354 +1,436 @@
 import 'package:checkpoint_app2/checkpoint_theme.dart';
+import 'package:checkpoint_app2/controllers/registration_controller.dart';
+import 'package:checkpoint_app2/controllers/user_controller.dart';
+import 'package:checkpoint_app2/models/registration_entry.dart';
+import 'package:checkpoint_app2/widgets/loading_widget.dart';
 import 'package:country_list_pick/country_list_pick.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:getwidget/colors/gf_color.dart';
+import 'package:getwidget/components/toast/gf_toast.dart';
+import 'package:getwidget/position/gf_toast_position.dart';
 
 enum Gender { male, female, other }
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+class SignUpScreen extends StatelessWidget {
+  SignUpScreen({Key? key}) : super(key: key);
 
-  @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
-}
-
-class _SignUpScreenState extends State<SignUpScreen> {
-  Gender _gender = Gender.male;
-  String? _selectedCountry = 'Select a country';
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final UserController userController = Get.put(UserController());
+  final RegistrationController registrationController =
+      Get.put(RegistrationController());
 
   @override
   Widget build(BuildContext context) {
-    final emailField = TextField(
-      obscureText: false,
-      // style: style,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        hintText: "Email",
-        hintStyle:
-            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.transparent,
-            style: BorderStyle.none,
-          ),
-          borderRadius: BorderRadius.circular(32.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.transparent,
-            style: BorderStyle.none,
-          ),
-          borderRadius: BorderRadius.circular(32.0),
-        ),
-      ),
-    );
-    final firstNameField = TextField(
-      obscureText: false,
-      // style: style,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        hintText: "First Name",
-        hintStyle:
-            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.transparent,
-            style: BorderStyle.none,
-          ),
-          borderRadius: BorderRadius.circular(32.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.transparent,
-            style: BorderStyle.none,
-          ),
-          borderRadius: BorderRadius.circular(32.0),
-        ),
-      ),
-    );
-    final lastNameField = TextField(
-      obscureText: false,
-      // style: style,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        hintText: "Last Name",
-        hintStyle:
-            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.transparent,
-            style: BorderStyle.none,
-          ),
-          borderRadius: BorderRadius.circular(32.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.transparent,
-            style: BorderStyle.none,
-          ),
-          borderRadius: BorderRadius.circular(32.0),
-        ),
-      ),
-    );
-    final icField = TextField(
-      obscureText: false,
-      // style: style,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        hintText: "IC/Passport No",
-        hintStyle:
-            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.transparent,
-            style: BorderStyle.none,
-          ),
-          borderRadius: BorderRadius.circular(32.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.transparent,
-            style: BorderStyle.none,
-          ),
-          borderRadius: BorderRadius.circular(32.0),
-        ),
-      ),
-    );
-    final phoneNoField = TextField(
-      obscureText: false,
-      // style: style,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        hintText: "Contact No",
-        hintStyle:
-            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.transparent,
-            style: BorderStyle.none,
-          ),
-          borderRadius: BorderRadius.circular(32.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.transparent,
-            style: BorderStyle.none,
-          ),
-          borderRadius: BorderRadius.circular(32.0),
-        ),
-      ),
-    );
-
     return Scaffold(
-      backgroundColor: const Color(0xfff2f3f8),
-      appBar: AppBar(
-        elevation: 0,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-        children: [
-          const SizedBox(
-            height: 20.0,
+        backgroundColor: Colors.white, //const Color(0xfff2f3f8),
+        appBar: AppBar(
+          iconTheme: const IconThemeData(
+            color: Colors.black,
           ),
-          SizedBox(
-            width: 10.0,
-            height: 80.0,
-            child: Text(
-              'SIGN UP',
-              style: CheckpointTheme.lightTextTheme.headline1,
-              softWrap: true,
-            ),
-          ),
-          firstNameField,
-          const SizedBox(
-            height: 20.0,
-          ),
-          lastNameField,
-          const SizedBox(
-            height: 20.0,
-          ),
-          emailField,
-          const SizedBox(
-            height: 20.0,
-          ),
-          phoneNoField,
-          const SizedBox(
-            height: 20.0,
-          ),
-          icField,
-          const SizedBox(
-            height: 20.0,
-          ),
-          // ElevatedButton(
-          //   style: ElevatedButton.styleFrom(
-          //     alignment: Alignment.centerLeft,
-          //     elevation: 0,
-          //     primary: Colors.white,
-          //     minimumSize: const Size(250.0, 50.0),
-          //   ),
-          //   onPressed: () {
-          //     showCountryPicker(
-          //       context: context,
-          //       countryListTheme: CountryListThemeData(
-          //         flagSize: 25,
-          //         backgroundColor: Colors.white,
-          //         textStyle:
-          //             const TextStyle(fontSize: 16, color: Colors.blueGrey),
-          //         //Optional. Sets the border radius for the bottomsheet.
-          //         borderRadius: const BorderRadius.only(
-          //           topLeft: Radius.circular(20.0),
-          //           topRight: Radius.circular(20.0),
-          //         ),
-          //         //Optional. Styles the search field.
-          //         inputDecoration: InputDecoration(
-          //           labelText: 'Search',
-          //           hintText: 'Start typing to search',
-          //           prefixIcon: const Icon(Icons.search),
-          //           border: OutlineInputBorder(
-          //             borderSide: BorderSide(
-          //               color: const Color(0xFF8C98A8).withOpacity(0.2),
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //       onSelect: (Country country) {
-          //         // setState(
-          //         //   () {
-          //         _selectedCountry = country as String;
-          //         //   },
-          //         // );
-          //       },
-          //     );
-          //   },
-          //   child: Text(
-          //     '$_selectedCountry',
-          //     textAlign: TextAlign.center,
-          //     style: const TextStyle(
-          //       color: Colors.black,
-          //       fontSize: 16.0,
-          //       fontWeight: FontWeight.bold,
-          //     ),
-          //   ),
-          // ),
-          Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-            decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(36.0))),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: CountryListPick(
-                appBar: AppBar(
-                  backgroundColor: Colors.deepOrange,
-                  title: const Text('Select a country'),
+          actions: const [],
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Sign Up User',
+                  style: CheckpointTheme.lightTextTheme.headline2,
                 ),
-                theme: CountryTheme(
-                  labelColor: Colors.black,
-                  isShowFlag: true,
-                  isShowTitle: true,
-                  isShowCode: false,
-                  isDownIcon: true,
-                  showEnglishName: true,
+                const SizedBox(
+                  height: 40.0,
                 ),
-                initialSelection: 'MY',
-                onChanged: (CountryCode? code) {
-                  setState(() {
-                    _selectedCountry = code?.name;
-                  });
-                  print(code?.name);
-                  print(code?.code);
-                  print(code?.dialCode);
-                  print(code?.flagUri);
-                },
-                useUiOverlay: true,
-                useSafeArea: false,
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 20.0,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const Text(
-                'Gender',
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-              ),
-              ListTile(
-                title: const Text('Male'),
-                leading: Radio<Gender>(
-                  value: Gender.male,
-                  groupValue: _gender,
-                  onChanged: (Gender? value) {
-                    setState(() {
-                      _gender = value as Gender;
-                    });
+                TextFormField(
+                  decoration: InputDecoration(
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    label: Text(
+                      'Username',
+                      style: CheckpointTheme.lightTextTheme.headline5,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 25.0),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                    hintText: 'Lee',
+                    errorStyle: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Username cannot be empty!';
+                    }
+
+                    if (value.length < 6 || value.length > 12) {
+                      return 'Username must be between 6 - 12 characters length!';
+                    }
+                    return null;
+                  },
+                  onSaved: (String? value) {
+                    registrationController.username.value = value!;
                   },
                 ),
-              ),
-              ListTile(
-                title: const Text('Female'),
-                leading: Radio<Gender>(
-                  value: Gender.female,
-                  groupValue: _gender,
-                  onChanged: (Gender? value) {
-                    setState(() {
-                      _gender = value as Gender;
-                    });
+                const SizedBox(
+                  height: 20.0,
+                ),
+                TextFormField(
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    label: Text(
+                      'Full Name',
+                      style: CheckpointTheme.lightTextTheme.headline5,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 25.0),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                    hintText: 'Lee Chen',
+                    errorStyle: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'full name cannot be empty!';
+                    }
+                    return null;
+                  },
+                  onSaved: (String? value) {
+                    registrationController.fullName.value = value!;
                   },
                 ),
-              ),
-              ListTile(
-                title: const Text('Other'),
-                leading: Radio<Gender>(
-                  value: Gender.other,
-                  groupValue: _gender,
-                  onChanged: (Gender? value) {
-                    setState(() {
-                      _gender = value as Gender;
-                    });
+                const SizedBox(
+                  height: 20.0,
+                ),
+                TextFormField(
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    label: Text(
+                      'Date of birth',
+                      style: CheckpointTheme.lightTextTheme.headline5,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 25.0),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                    hintText: 'YYYY-MM-DD',
+                    errorStyle: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Contact number cannot be empty!';
+                    }
+                    return null;
+                  },
+                  onSaved: (String? value) {
+                    registrationController.dob.value = value!;
                   },
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 20.0,
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.deepOrange,
-              minimumSize: const Size(250.0, 50.0),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                TextFormField(
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    label: Text(
+                      'Email',
+                      style: CheckpointTheme.lightTextTheme.headline5,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 25.0),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                    hintText: 'lee@checkpointspot.asia',
+                    errorStyle: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Email cannot be empty!';
+                    }
+                    return null;
+                  },
+                  onSaved: (String? value) {
+                    registrationController.email.value = value!;
+                  },
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                TextFormField(
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    label: Text(
+                      'Contact No',
+                      style: CheckpointTheme.lightTextTheme.headline5,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 25.0),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                    hintText: '+60123456789',
+                    errorStyle: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Contact number cannot be empty!';
+                    }
+                    return null;
+                  },
+                  onSaved: (String? value) {
+                    registrationController.contactNo.value = value!;
+                  },
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                TextFormField(
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    label: Text(
+                      'IC/Passport No',
+                      style: CheckpointTheme.lightTextTheme.headline5,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 25.0),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                    hintText: 'CHCK1234567890',
+                    errorStyle: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Ic/Passport cannot be empty!';
+                    }
+                    return null;
+                  },
+                  onSaved: (String? value) {
+                    registrationController.icNo.value = value!;
+                  },
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 5.0),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.transparent),
+                      color: const Color(0xfff2f3f8),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(8.0))),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: CountryListPick(
+                      appBar: AppBar(
+                        iconTheme: const IconThemeData(
+                          color: Colors.black,
+                        ),
+                        actions: const [],
+                        elevation: 0,
+                        shadowColor: Colors.transparent,
+                        backgroundColor: Colors.white,
+                        title: const Text('Select a country'),
+                      ),
+                      theme: CountryTheme(
+                        labelColor: Colors.black,
+                        isShowFlag: true,
+                        isShowTitle: true,
+                        isShowCode: false,
+                        isDownIcon: true,
+                        showEnglishName: true,
+                      ),
+                      initialSelection: 'MY',
+                      onChanged: (CountryCode? code) {
+                        registrationController.nationality.value =
+                            code != null ? code.code as String : '';
+                      },
+                      useUiOverlay: true,
+                      useSafeArea: false,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                Obx(() => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        const Text(
+                          'Gender',
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Text('Male'),
+                                Radio<String>(
+                                  value: 'M',
+                                  groupValue:
+                                      registrationController.gender.value,
+                                  onChanged: (String? value) {
+                                    registrationController.gender.value =
+                                        value!;
+                                  },
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Text('Female'),
+                                Radio<String>(
+                                  value: 'F',
+                                  groupValue:
+                                      registrationController.gender.value,
+                                  onChanged: (String? value) {
+                                    registrationController.gender.value =
+                                        value!;
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                      ],
+                    )),
+                const SizedBox(
+                  height: 40.0,
+                ),
+                ElevatedButton(
+                  child: const Text(
+                    'Sign Up',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                  onPressed: () async {
+                    final form = _formKey.currentState;
+
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.unfocus();
+                    }
+
+                    if (form!.validate()) {
+                      form.save();
+
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => const LoadingWidget(
+                          stateText: 'Signing Up',
+                        ),
+                      );
+
+                      RegistrationEntry newRegistrationEntry =
+                          RegistrationEntry(
+                              cName: registrationController.fullName.value,
+                              cNationality:
+                                  registrationController.nationality.value,
+                              cIDNo: registrationController.icNo.value,
+                              dDOB: registrationController.dob.value,
+                              cGender: registrationController.gender.value,
+                              cContactNo:
+                                  registrationController.contactNo.value,
+                              cEmailAddress: registrationController.email.value,
+                              cUserID: registrationController.username.value);
+
+                      String? response;
+                      try {
+                        response =
+                            await userController.signup(newRegistrationEntry);
+                      } on DioError catch (e) {
+                        print(e);
+                      }
+
+                      if (response != null) {
+                        Navigator.pop(context);
+                        GFToast.showToast('Registration Successful!', context,
+                            toastPosition: GFToastPosition.BOTTOM,
+                            textStyle: const TextStyle(
+                                fontSize: 16,
+                                color: GFColors.SUCCESS,
+                                fontWeight: FontWeight.bold),
+                            backgroundColor: GFColors.DARK,
+                            toastBorderRadius: 8.0,
+                            trailing: const Icon(
+                              Icons.check,
+                              color: GFColors.SUCCESS,
+                            ));
+
+                        await Future.delayed(const Duration(seconds: 2), () {
+                          Navigator.pop(context);
+                        });
+                      } else {
+                        Navigator.pop(context);
+                        GFToast.showToast(
+                            'An error occurred! Please check and retry again...',
+                            context,
+                            toastPosition: GFToastPosition.BOTTOM,
+                            textStyle: const TextStyle(
+                                fontSize: 16,
+                                color: GFColors.DANGER,
+                                fontWeight: FontWeight.bold),
+                            backgroundColor: GFColors.DARK,
+                            toastBorderRadius: 8.0,
+                            trailing: const Icon(
+                              Icons.clear,
+                              color: GFColors.DANGER,
+                            ));
+                      }
+                    }
+                  },
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+              ],
             ),
-            onPressed: () {},
-            child: const Text(
-              'Sign Up',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
           ),
-          const SizedBox(
-            height: 20.0,
-          ),
-        ],
-      ),
-    );
+        ));
   }
 }

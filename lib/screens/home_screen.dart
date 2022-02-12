@@ -1,3 +1,4 @@
+import 'package:checkpoint_app2/checkpoint_theme.dart';
 import 'package:checkpoint_app2/controllers/navigation_controller.dart';
 import 'package:checkpoint_app2/screens/activity_screen.dart';
 import 'package:checkpoint_app2/screens/events_screen.dart';
@@ -38,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     FirebaseMessaging.instance
         .getToken()
-        .then((value) => print('Token: ${value}'));
+        .then((value) => print('Token: $value'));
 
     FirebaseMessaging.instance
         .getInitialMessage()
@@ -74,12 +75,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return GetBuilder<NavigationController>(
       builder: (pageController) {
         return Scaffold(
-          backgroundColor: const Color(0xfff2f3f8),
           body: IndexedStack(
             index: pageController.tabIndex,
             children: [
               const EventsScreen(),
-              const TrackScreen(),
+              TrackScreen(),
               ActivityScreen(),
               SettingsScreen(),
             ],
@@ -87,7 +87,9 @@ class _HomeScreenState extends State<HomeScreen> {
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             iconSize: 22.0,
-            selectedItemColor: Colors.deepOrange,
+            selectedItemColor: CheckpointTheme.light()
+                .bottomNavigationBarTheme
+                .selectedItemColor,
             unselectedItemColor: Colors.black45,
             showUnselectedLabels: true,
             showSelectedLabels: true,

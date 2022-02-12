@@ -1,21 +1,27 @@
 import 'package:checkpoint_app2/models/logout_response.dart';
+import 'package:checkpoint_app2/models/partial_user.dart';
+import 'package:checkpoint_app2/models/registration_entry.dart';
 import 'package:checkpoint_app2/models/user.dart';
 import 'package:checkpoint_app2/services/authentication_service.dart';
+import 'package:checkpoint_app2/services/user_service.dart';
 import 'package:get/state_manager.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserController extends GetxController {
   RxBool isLoggedIn = false.obs;
   RxBool isLoading = false.obs;
-  var userList = <User>[].obs;
+  RxList userList = <User>[].obs;
+  RxBool trackScreenLoaded = false.obs;
+  RxInt activityChoice = 1.obs;
+
+  var activityChoices = <int, String>{0: 'WALKING', 1: 'RUNNING', 2: 'CYCLING'};
 
   Future<List<User>?> login(String username, String password) async {
-    isLoading.value = true;
+    isLoading.toggle();
     List<User>? user = await AuthenticationService.login(username, password);
 
     if (user != null && user.isNotEmpty) {
       userList.add(user[0]);
-      isLoading.value = false;
+      isLoading.toggle();
       isLoggedIn.toggle();
       update();
       return user;
@@ -28,46 +34,55 @@ class UserController extends GetxController {
     return res;
   }
 
-  Future<void> setUser(User userData) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    print('In User Controller');
-    print(userData.profileDependentClasses);
+  Future<void> updateUser(String profileId, PartialUser updates) async {
+    PartialUser? userUpdates = await UserService.update(profileId, updates);
 
-    prefs.setString('username', userData.cUserID as String);
-    prefs.setString('userFullName', userData.cName);
-    prefs.setString('userFirstName', userData.cFirstName);
-    prefs.setString('userLastName', userData.cLastName);
-    prefs.setString('userIdNo', userData.cIDNo);
-    prefs.setString('userEmail', userData.cEmailAddress as String);
-    prefs.setString('userPhoneNo', userData.cContactNo as String);
-    prefs.setString(
-        'userEmergencyContactNo', userData.cEmerContactNo as String);
-    prefs.setString('userNationality', userData.cNationality as String);
-    prefs.setString('userAddress1', userData.cAddress1 as String);
-    prefs.setString('userAddress2', userData.cAddress2 as String);
-    prefs.setString('userAddress3', userData.cAddress3 as String);
-    prefs.setString('userCity', userData.cCity as String);
-    prefs.setString('userPostCode', userData.cPostCode as String);
-    prefs.setString('userDOB', userData.dDOB as String);
-    prefs.setString('userPostCode', userData.cPostCode as String);
-    prefs.setString('userCity', userData.cCity as String);
-    prefs.setString('userStateCode', userData.cStateCode as String);
-    prefs.setString('userCountryCode',
-        userData.cCountryCode == null ? '' : userData.cCountryCode as String);
-    prefs.setString(
-        'userEmergencyContactName', userData.cEmerContactName as String);
-    prefs.setString('userEmergencyRel', userData.cEmerContactRel as String);
-    prefs.setString(
-        'userMedicalCondition', userData.cMedicalCondition as String);
-    prefs.setString('userReceiverName', userData.cReceiverName as String);
-    prefs.setString(
-        'userDeliveryAddress1', userData.cDeliveryAddress1 as String);
-    prefs.setString(
-        'userDeliveryAddress2', userData.cDeliveryAddress2 as String);
-    prefs.setString(
-        'userDeliveryAddress3', userData.cDeliveryAddress3 as String);
-    prefs.setBool('isLoggedIn', userData.bIsLogin as bool);
-    prefs.setString('dependants',
-        dependantToJson(userData.profileDependentClasses as List<Dependant>));
+    if (userUpdates != null) {
+      userList[0].cFirstName = userUpdates.cFirstName;
+      userList[0].cLastName = userUpdates.cLastName;
+      userList[0].cName = userUpdates.cName;
+      userList[0].cContactNo = userUpdates.cContactNo;
+      userList[0].cEmailAddress = userUpdates.cEmailAddress;
+    }
+  }
+
+  Future<String?> signup(RegistrationEntry registrationEntry) async {
+    String? response = await UserService.signup(registrationEntry);
+    return response;
+  }
+
+  Future<String?> forgotPassword(String email, String idNo) async {
+    isLoading.toggle();
+    String? response = await UserService.forgotPassword(email, idNo);
+    isLoading.toggle();
+    return response;
+  }
+
+  Future<String?> addDependant(
+      String userProfileId,
+      String firstName,
+      String lastName,
+      String email,
+      String dob,
+      String idNo,
+      String contact,
+      String nationality,
+      String gender) async {
+    isLoading.toggle();
+    await UserService.addNewDependant(userProfileId, firstName, lastName, email,
+        dob, idNo, contact, nationality, gender);
+
+    userList[0].profileDependentClasses?.add(
+          Dependant(
+              cName: '$firstName $lastName',
+              cFirstName: firstName,
+              cLastName: lastName,
+              cNationality: nationality,
+              cIDNo: idNo,
+              cContactNo: contact,
+              cGender: gender,
+              dDOB: dob,
+              cEmailAddress: email),
+        );
   }
 }

@@ -14,7 +14,7 @@ class AuthenticationController extends GetxController {
     if (user!.isNotEmpty) {
       isLoggedIn.value = user[0].bIsLogin as bool;
       // update();
-      userController.setUser(user[0]);
+      // userController.setUser(user[0]);
       print("In Auth Controller");
       print(user[0].profileDependentClasses);
       return user;

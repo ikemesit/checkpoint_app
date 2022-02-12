@@ -18,11 +18,11 @@ String dependantToJson(List<Dependant> data) =>
 
 class User {
   User({
-    required this.lProfileID,
-    required this.cName,
-    required this.cFirstName,
-    required this.cLastName,
-    required this.cIDNo,
+    this.lProfileID,
+    this.cName,
+    this.cFirstName,
+    this.cLastName,
+    this.cIDNo,
     this.cUserID,
     this.bFirstTime,
     this.bIsLogin,
@@ -55,12 +55,12 @@ class User {
     this.profileDependentClasses,
   });
 
-  String lProfileID;
-  String cName;
-  String cIDNo;
+  String? lProfileID;
+  String? cName;
+  String? cIDNo;
   String? cUserID;
-  String cFirstName;
-  String cLastName;
+  String? cFirstName;
+  String? cLastName;
   bool? bFirstTime;
   bool? bIsLogin;
   String? cNationality;
@@ -92,40 +92,41 @@ class User {
   List<Dependant>? profileDependentClasses;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-        lProfileID: '{$json["lProfileID"]}',
-        cName: json["cName"],
-        cIDNo: json["cIDNo"],
-        cUserID: json["cUserID"],
-        bFirstTime: json["bFirstTime"],
-        bIsLogin: json["bIsLogin"],
-        cFirstName: json["cFirstName"],
-        cLastName: json["cLastName"],
-        cNationality: json["cNationality"],
-        dDOB: json["dDOB"],
-        cGender: json["cGender"],
-        cAddress1: json["cAddress1"],
-        cAddress2: json["cAddress2"],
-        cAddress3: json["cAddress3"],
-        cPostCode: json["cPostCode"],
-        cCity: json["cCity"],
-        cStateCode: json["cStateCode"],
-        cCountryCode: json["cCountryCode"],
-        cContactNo: json["cContactNo"],
-        cEmailAddress: json["cEmailAddress"],
-        cEmerContactName: json["cEmerContactName"],
-        cEmerContactRel: json["cEmerContactRel"],
-        cEmerContactNo: json["cEmerContactNo"],
-        cMedicalCondition: json["cMedicalCondition"],
-        cReceiverName: json["cReceiverName"],
-        cReceiverContactNo: json["cReceiverContactNo"],
-        cDeliveryCompanyName: json["cDeliveryCompanyName"],
-        cDeliveryAddress1: json["cDeliveryAddress1"],
-        cDeliveryAddress2: json["cDeliveryAddress2"],
-        cDeliveryAddress3: json["cDeliveryAddress3"],
-        cDeliveryPostCode: json["cDeliveryPostCode"],
-        cDeliveryCity: json["cDeliveryCity"],
-        cDeliveryStateCode: json["cDeliveryStateCode"],
-        cDeliveryCountryCode: json["cDeliveryCountryCode"],
+        lProfileID:
+            json["lProfileID"] != null ? json["lProfileID"].toString() : '',
+        cName: json["cName"] ?? '',
+        cIDNo: json["cIDNo"] ?? '',
+        cUserID: json["cUserID"] ?? '',
+        bFirstTime: json["bFirstTime"] ?? '',
+        bIsLogin: json["bIsLogin"] ?? '',
+        cFirstName: json["cFirstName"] ?? '',
+        cLastName: json["cLastName"] ?? '',
+        cNationality: json["cNationality"] ?? '',
+        dDOB: json["dDOB"] ?? '',
+        cGender: json["cGender"] ?? '',
+        cAddress1: json["cAddress1"] ?? '',
+        cAddress2: json["cAddress2"] ?? '',
+        cAddress3: json["cAddress3"] ?? '',
+        cPostCode: json["cPostCode"] ?? '',
+        cCity: json["cCity"] ?? '',
+        cStateCode: json["cStateCode"] ?? '',
+        cCountryCode: json["cCountryCode"] ?? '',
+        cContactNo: json["cContactNo"] ?? '',
+        cEmailAddress: json["cEmailAddress"] ?? '',
+        cEmerContactName: json["cEmerContactName"] ?? '',
+        cEmerContactRel: json["cEmerContactRel"] ?? '',
+        cEmerContactNo: json["cEmerContactNo"] ?? '',
+        cMedicalCondition: json["cMedicalCondition"] ?? '',
+        cReceiverName: json["cReceiverName"] ?? '',
+        cReceiverContactNo: json["cReceiverContactNo"] ?? '',
+        cDeliveryCompanyName: json["cDeliveryCompanyName"] ?? '',
+        cDeliveryAddress1: json["cDeliveryAddress1"] ?? '',
+        cDeliveryAddress2: json["cDeliveryAddress2"] ?? '',
+        cDeliveryAddress3: json["cDeliveryAddress3"] ?? '',
+        cDeliveryPostCode: json["cDeliveryPostCode"] ?? '',
+        cDeliveryCity: json["cDeliveryCity"] ?? '',
+        cDeliveryStateCode: json["cDeliveryStateCode"] ?? '',
+        cDeliveryCountryCode: json["cDeliveryCountryCode"] ?? '',
         profileDependentClasses: json["profileDependentClasses"] == null
             ? null
             : List<Dependant>.from(json["profileDependentClasses"]
@@ -173,7 +174,7 @@ class User {
 
 class Dependant {
   // int IID;
-  String lProfileID;
+  String? lProfileID;
   String cName;
   String cFirstName;
   String cLastName;
@@ -207,7 +208,7 @@ class Dependant {
 
   Dependant({
     // required this.lID,
-    required this.lProfileID,
+    this.lProfileID,
     required this.cName,
     required this.cFirstName,
     required this.cLastName,
