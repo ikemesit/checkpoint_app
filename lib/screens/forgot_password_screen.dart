@@ -95,8 +95,8 @@ class ForgotPasswordScreen extends StatelessWidget {
               ),
               TextInput(
                   label: 'ID No',
-                  hintText: 'Enter your registered ID number',
-                  errorMsg: 'ID Number field cannot be empty!',
+                  hintText: 'Enter your registered IC/Passport number',
+                  errorMsg: 'IC/Passport number cannot be empty!',
                   onSaved: (String? value) {
                     _forgotPasswordScreenController.idNo.value = value!;
                   },

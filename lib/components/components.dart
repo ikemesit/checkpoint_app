@@ -1,3 +1,3 @@
 export './carousel_item.dart';
-export './event_card.dart';
-export './notification_card.dart';
+export '../widgets/event_card_widget.dart';
+export '../widgets/notification_card_widget.dart';

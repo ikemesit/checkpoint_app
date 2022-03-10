@@ -28,6 +28,7 @@ class User {
     this.bIsLogin,
     this.cNationality,
     this.dDOB,
+    this.cTokenID,
     this.cGender,
     this.cAddress1,
     this.cAddress2,
@@ -55,7 +56,7 @@ class User {
     this.profileDependentClasses,
   });
 
-  String? lProfileID;
+  int? lProfileID;
   String? cName;
   String? cIDNo;
   String? cUserID;
@@ -65,6 +66,7 @@ class User {
   bool? bIsLogin;
   String? cNationality;
   String? dDOB;
+  String? cTokenID;
   String? cGender;
   String? cAddress1;
   String? cAddress2;
@@ -92,8 +94,7 @@ class User {
   List<Dependant>? profileDependentClasses;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-        lProfileID:
-            json["lProfileID"] != null ? json["lProfileID"].toString() : '',
+        lProfileID: json["lProfileID"] ?? '',
         cName: json["cName"] ?? '',
         cIDNo: json["cIDNo"] ?? '',
         cUserID: json["cUserID"] ?? '',
@@ -103,6 +104,7 @@ class User {
         cLastName: json["cLastName"] ?? '',
         cNationality: json["cNationality"] ?? '',
         dDOB: json["dDOB"] ?? '',
+        cTokenID: json["cTokenID"] ?? '',
         cGender: json["cGender"] ?? '',
         cAddress1: json["cAddress1"] ?? '',
         cAddress2: json["cAddress2"] ?? '',
@@ -144,6 +146,7 @@ class User {
         "cFirstName": cFirstName,
         "cLastName": cLastName,
         "dDOB": dDOB,
+        "cTokenID": cTokenID,
         "cGender": cGender,
         "cAddress1": cAddress1,
         "cAddress2": cAddress2,

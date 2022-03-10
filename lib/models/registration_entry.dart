@@ -12,6 +12,8 @@ String registrationEntryToJson(RegistrationEntry data) =>
 
 class RegistrationEntry {
   RegistrationEntry({
+    required this.cFirstName,
+    required this.cLastName,
     required this.cName,
     required this.cNationality,
     required this.cIDNo,
@@ -22,6 +24,8 @@ class RegistrationEntry {
     required this.cUserID,
   });
 
+  String cFirstName;
+  String cLastName;
   String cName;
   String cNationality;
   String cIDNo;
@@ -33,6 +37,8 @@ class RegistrationEntry {
 
   factory RegistrationEntry.fromJson(Map<String, dynamic> json) =>
       RegistrationEntry(
+        cFirstName: json["cFirstName"],
+        cLastName: json["cLastName"],
         cName: json["cName"],
         cNationality: json["cNationality"],
         cIDNo: json["cIDNo"],
@@ -44,6 +50,8 @@ class RegistrationEntry {
       );
 
   Map<String, dynamic> toJson() => {
+        "cFirstName": cFirstName,
+        "cLastName": cLastName,
         "cName": cName,
         "cNationality": cNationality,
         "cIDNo": cIDNo,

@@ -1,14 +1,15 @@
-import 'package:checkpoint_app2/components/live_map_widget.dart';
-import 'package:checkpoint_app2/controllers/map_widget_controller.dart';
+import 'package:checkpoint_app2/controllers/activity_controller.dart';
 import 'package:checkpoint_app2/controllers/user_controller.dart';
 import 'package:checkpoint_app2/screens/user_profile_screen.dart';
-import 'package:checkpoint_app2/widgets/loading_widget.dart';
+import 'package:checkpoint_app2/widgets/activity_timer_widget.dart';
+import 'package:checkpoint_app2/widgets/live_map_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:location/location.dart';
 
 import '../checkpoint_theme.dart';
+import 'activity_save_screen.dart';
 import 'notifications_screen.dart';
 
 class LiveTrackingScreen extends StatelessWidget {
@@ -19,7 +20,7 @@ class LiveTrackingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserController _userController = Get.find<UserController>();
-    MapWidgetController _mapWidgetController = Get.find<MapWidgetController>();
+    ActivityController _mapWidgetController = Get.find<ActivityController>();
     final Future<LocationData> currentLocation = location.getLocation();
 
     Icon getActivityIcon() {
@@ -128,25 +129,9 @@ class LiveTrackingScreen extends StatelessWidget {
                                     child: getActivityIcon(),
                                   ),
                                   const SizedBox(
-                                    width: 10.0,
+                                    width: 30.0,
                                   ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Time Started',
-                                          style: CheckpointTheme
-                                              .lightTextTheme.headline5),
-                                      const SizedBox(
-                                        width: 10.0,
-                                      ),
-                                      Text(
-                                          _mapWidgetController
-                                              .timeTrackingStarted.value,
-                                          style: CheckpointTheme
-                                              .lightTextTheme.bodyText2)
-                                    ],
-                                  ),
+                                  const ActivityTimerWidget()
                                 ],
                               ),
                               const Divider(),
@@ -193,7 +178,7 @@ class LiveTrackingScreen extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text('Longitude:',
+                                      Text('Longitude',
                                           style: CheckpointTheme
                                               .lightTextTheme.headline5),
                                       const SizedBox(
@@ -210,8 +195,7 @@ class LiveTrackingScreen extends StatelessWidget {
                                 height: 10.0,
                               ),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Column(
                                     crossAxisAlignment:
@@ -227,10 +211,32 @@ class LiveTrackingScreen extends StatelessWidget {
                                           _mapWidgetController.distance.value
                                                   .toStringAsFixed(3) +
                                               'm',
+                                          // _mapWidgetController.stepsTaken.value
+                                          //     .toString(),
                                           style: CheckpointTheme
                                               .lightTextTheme.bodyText2)
                                     ],
-                                  )
+                                  ),
+                                  const SizedBox(
+                                    width: 38,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Time Started',
+                                          style: CheckpointTheme
+                                              .lightTextTheme.headline5),
+                                      const SizedBox(
+                                        width: 10.0,
+                                      ),
+                                      Text(
+                                          _mapWidgetController
+                                              .timeTrackingStarted.value,
+                                          style: CheckpointTheme
+                                              .lightTextTheme.bodyText2)
+                                    ],
+                                  ),
                                 ],
                               ),
                               const Divider(),
@@ -239,19 +245,23 @@ class LiveTrackingScreen extends StatelessWidget {
                               ),
                               ElevatedButton(
                                 onPressed: () async {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) => const LoadingWidget(
-                                      stateText: 'Saving Session',
-                                    ),
-                                  );
+                                  // showDialog(
+                                  //   context: context,
+                                  //   barrierDismissible: false,
+                                  //   builder: (context) => const LoadingWidget(
+                                  //     stateText: 'Saving Session',
+                                  //   ),
+                                  // );
 
-                                  await Future.delayed(
-                                      const Duration(seconds: 2), () {
-                                    Navigator.pop(context);
-                                    Get.back(closeOverlays: true);
-                                  });
+                                  // await Future.delayed(
+                                  //     const Duration(seconds: 2), () {
+                                  //   Navigator.pop(context);
+                                  //   Get.back(closeOverlays: true);
+                                  // });
+                                  Get.off(() => const ActivitySaveScreen(),
+                                      fullscreenDialog: true,
+                                      transition: Transition.rightToLeft);
+                                  // Get.back(closeOverlays: true);
                                 },
                                 child: Text(
                                   'Stop Tracking',

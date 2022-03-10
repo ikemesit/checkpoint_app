@@ -21,16 +21,12 @@ class TextInput extends StatelessWidget {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
-        // floatingLabelBehavior: FloatingLabelBehavior.always,
-        // label: Text(
-        //   label,
-        //   style: CheckpointTheme.lightTextTheme.headline5,
-        // ),
         contentPadding:
             const EdgeInsets.symmetric(vertical: 15.0, horizontal: 25.0),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: Colors.black12,
         border: const OutlineInputBorder(
+            borderSide: BorderSide.none,
             borderRadius: BorderRadius.all(Radius.circular(8.0))),
         hintText: hintText,
         errorStyle: const TextStyle(

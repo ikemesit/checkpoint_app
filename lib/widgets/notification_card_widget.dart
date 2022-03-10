@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 
-class NotificationCard extends StatelessWidget {
-  NotificationCard({Key? key}) : super(key: key);
+class NotificationCardWidget extends StatelessWidget {
+  NotificationCardWidget({Key? key}) : super(key: key);
   final notificationsController = Get.put(NotificationsController());
 
   @override

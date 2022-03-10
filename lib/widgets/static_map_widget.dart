@@ -1,16 +1,13 @@
 import 'dart:async';
 
-import 'package:checkpoint_app2/controllers/map_widget_controller.dart';
+import 'package:checkpoint_app2/controllers/activity_controller.dart';
 import 'package:checkpoint_app2/controllers/user_controller.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:jiffy/jiffy.dart';
 import 'package:location/location.dart';
-import 'package:maps_toolkit/maps_toolkit.dart' as mp;
 
 const double cameraZoom = 18;
 const double cameraTilt = 0;
@@ -18,17 +15,14 @@ const double cameraBearing = 30;
 const LatLng sourceLocation = LatLng(42.747932, -71.167889);
 const LatLng destLocation = LatLng(37.335685, -122.0605916);
 
-class LiveMapWidget extends StatefulWidget {
-  final LocationData? initialLocation;
-
-  const LiveMapWidget({Key? key, required this.initialLocation})
-      : super(key: key);
+class StaticMapWidget extends StatefulWidget {
+  const StaticMapWidget({Key? key}) : super(key: key);
 
   @override
-  State<LiveMapWidget> createState() => _LiveMapWidgetState();
+  _StaticMapWidgetState createState() => _StaticMapWidgetState();
 }
 
-class _LiveMapWidgetState extends State<LiveMapWidget> {
+class _StaticMapWidgetState extends State<StaticMapWidget> {
   final Completer<GoogleMapController> _controller = Completer();
   final Set<Marker> _markers = <Marker>{};
   final Set<Polyline> _polylines = <Polyline>{};
@@ -40,13 +34,8 @@ class _LiveMapWidgetState extends State<LiveMapWidget> {
   LocationData? currentLocation;
   late LocationData destinationLocation;
   late Location location;
-  late StreamSubscription locationStream;
   final UserController userController = Get.find<UserController>();
-  final MapWidgetController _mapWidgetController =
-      Get.put(MapWidgetController());
-  late LocationData previousPoint;
-  double distance = 0.0;
-  late String timeEnded;
+  final ActivityController _mapWidgetController = Get.put(ActivityController());
 
   @override
   void initState() {
@@ -56,29 +45,16 @@ class _LiveMapWidgetState extends State<LiveMapWidget> {
     setInitialLocation();
     setSourceAndDestinationIcons();
 
-    locationStream = location.onLocationChanged.listen((LocationData cLoc) {
-      currentLocation = cLoc;
-      updatePinOnMap();
-
-      _mapWidgetController.latitude(currentLocation?.latitude.toString());
-      _mapWidgetController.longitude(currentLocation?.longitude.toString());
-      _mapWidgetController.altitude(currentLocation?.altitude);
-
-      calculateDistanceTravelled(previousPoint, cLoc);
-
-      _mapWidgetController.distance(distance);
-    });
-
-    _mapWidgetController.timeTrackingStarted(Jiffy().yMMMdjm);
+    // location.onLocationChanged.listen((LocationData cLoc) {
+    //   currentLocation = cLoc;
+    //   updatePinOnMap();
+    //
+    //   _mapWidgetController.latitude(currentLocation?.latitude.toString());
+    //   _mapWidgetController.longitude(currentLocation?.longitude.toString());
+    //   _mapWidgetController.altitude(currentLocation?.altitude.toString());
+    // });
 
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    locationStream.cancel();
-    _mapWidgetController.timeTrackingEnded(Jiffy().yMMMdjm);
-    super.dispose();
   }
 
   void setSourceAndDestinationIcons() async {
@@ -91,13 +67,14 @@ class _LiveMapWidgetState extends State<LiveMapWidget> {
         'assets/images/destination_map_marker.png');
   }
 
-  void setInitialLocation() {
-    currentLocation = widget.initialLocation; //await location.getLocation();
+  void setInitialLocation() async {
+    currentLocation = await location.getLocation();
     destinationLocation = LocationData.fromMap({
       "latitude": destLocation.latitude,
       "longitude": destLocation.longitude
     });
-    previousPoint = currentLocation!;
+
+    updatePinOnMap();
   }
 
   void showPinsOnMap() {
@@ -161,16 +138,6 @@ class _LiveMapWidgetState extends State<LiveMapWidget> {
           position: pinPosition,
           icon: sourceIcon));
     });
-  }
-
-  void calculateDistanceTravelled(
-      LocationData prevPoint, LocationData currPoint) {
-    var from =
-        mp.LatLng(prevPoint.latitude as double, prevPoint.longitude as double);
-    var to =
-        mp.LatLng(currPoint.latitude as double, currPoint.longitude as double);
-    distance += mp.SphericalUtil.computeDistanceBetween(from, to) / 10;
-    previousPoint = prevPoint;
   }
 
   @override

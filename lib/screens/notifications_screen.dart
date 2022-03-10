@@ -1,5 +1,5 @@
-import 'package:checkpoint_app2/components/notification_card.dart';
 import 'package:checkpoint_app2/controllers/notifications_controller.dart';
+import 'package:checkpoint_app2/widgets/notification_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -22,7 +22,7 @@ class NotificationsScreen extends StatelessWidget {
         () => ListView.builder(
             itemCount: notificationsController.notificationCount.value,
             itemBuilder: (BuildContext context, int index) {
-              return NotificationCard();
+              return NotificationCardWidget();
             }),
       ),
     );

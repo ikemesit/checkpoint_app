@@ -6,17 +6,21 @@ class AuthenticationService {
   static var client = http.Client();
 
   static Future<List<User>?> login(String username, String password) async {
-    var response = await client.get(
-        Uri.https('api.staging.checkpointspot.asia',
-            '/api/user/authentication/$username/$password'),
-        headers: {'APIKey': 'ABCD1234'});
+    try {
+      var response = await client.get(
+          Uri.https('api.staging.checkpointspot.asia',
+              '/api/user/authentication/$username/$password'),
+          headers: {'APIKey': 'ABCD1234'});
 
-    if (response.statusCode == 200) {
-      var jsonString = response.body;
-      return userFromJson(jsonString);
-    } else {
-      // Show error
-      return null;
+      if (response.statusCode == 200) {
+        var jsonString = response.body;
+        return userFromJson(jsonString);
+      } else {
+        // Show error
+        return null;
+      }
+    } on Error catch (e) {
+      print(e);
     }
   }
 

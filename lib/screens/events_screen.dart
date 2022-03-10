@@ -74,7 +74,7 @@ class EventsScreen extends StatelessWidget {
                 const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
             itemCount: eventController.eventsList.length,
             itemBuilder: (BuildContext context, index) {
-              return EventCard(
+              return EventCardWidget(
                 event: eventController.eventsList[index],
               );
               // }

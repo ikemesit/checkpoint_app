@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-class MapWidgetController extends GetxController {
+class ActivityController extends GetxController {
   RxDouble altitude = 0.0.obs;
   RxString latitude = '0'.obs;
   RxString longitude = '0'.obs;
@@ -8,4 +8,6 @@ class MapWidgetController extends GetxController {
   RxDouble distance = 0.0.obs;
   RxString timeTrackingStarted = ''.obs;
   RxString timeTrackingEnded = ''.obs;
+  RxInt stepsTaken = 0.obs;
+  RxString timeElasped = '00:00:00'.obs;
 }

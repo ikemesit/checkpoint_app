@@ -1,30 +1,42 @@
 import 'package:checkpoint_app2/checkpoint_theme.dart';
-import 'package:checkpoint_app2/controllers/registration_controller.dart';
 import 'package:checkpoint_app2/controllers/user_controller.dart';
 import 'package:checkpoint_app2/models/registration_entry.dart';
+import 'package:checkpoint_app2/shared/validation_functions.dart';
+import 'package:checkpoint_app2/widgets/country_selector_widget.dart';
+import 'package:checkpoint_app2/widgets/date_input_widget.dart';
+import 'package:checkpoint_app2/widgets/gender_selector_widget.dart';
 import 'package:checkpoint_app2/widgets/loading_widget.dart';
-import 'package:country_list_pick/country_list_pick.dart';
-import 'package:dio/dio.dart';
+import 'package:checkpoint_app2/widgets/text_input_widget.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/colors/gf_color.dart';
 import 'package:getwidget/components/toast/gf_toast.dart';
 import 'package:getwidget/position/gf_toast_position.dart';
 
-enum Gender { male, female, other }
-
 class SignUpScreen extends StatelessWidget {
   SignUpScreen({Key? key}) : super(key: key);
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final UserController userController = Get.put(UserController());
-  final RegistrationController registrationController =
-      Get.put(RegistrationController());
+
+  final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _fnameController = TextEditingController();
+  final TextEditingController _lnameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _contactNoController = TextEditingController();
+  final TextEditingController _icNoController = TextEditingController();
+  final TextEditingController _genderController =
+      TextEditingController(text: 'Male');
+  final TextEditingController _countryCodeController =
+      TextEditingController(text: 'MY');
+
+  final _genderOptions = ['Male', 'Female'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white, //const Color(0xfff2f3f8),
         appBar: AppBar(
           iconTheme: const IconThemeData(
             color: Colors.black,
@@ -49,294 +61,82 @@ class SignUpScreen extends StatelessWidget {
                 const SizedBox(
                   height: 40.0,
                 ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    label: Text(
-                      'Username',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 25.0),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                    hintText: 'Lee',
-                    errorStyle: const TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Username cannot be empty!';
-                    }
-
-                    if (value.length < 6 || value.length > 12) {
-                      return 'Username must be between 6 - 12 characters length!';
-                    }
-                    return null;
-                  },
-                  onSaved: (String? value) {
-                    registrationController.username.value = value!;
-                  },
+                TextInputWidget(
+                  controller: _usernameController,
+                  label: 'Username',
+                  hintText: 'Enter your username',
+                  validatorFn: usernameValidationFn,
+                  onChanged: (String? value) {},
                 ),
                 const SizedBox(
                   height: 20.0,
                 ),
-                TextFormField(
-                  obscureText: false,
-                  decoration: InputDecoration(
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    label: Text(
-                      'Full Name',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 25.0),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                    hintText: 'Lee Chen',
-                    errorStyle: const TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'full name cannot be empty!';
-                    }
-                    return null;
-                  },
-                  onSaved: (String? value) {
-                    registrationController.fullName.value = value!;
-                  },
+                TextInputWidget(
+                  controller: _fnameController,
+                  label: 'First Name',
+                  hintText: 'Enter your first name',
+                  validatorFn: firstNameValidationFn,
+                  onChanged: (String? value) {},
                 ),
                 const SizedBox(
                   height: 20.0,
                 ),
-                TextFormField(
-                  obscureText: false,
-                  decoration: InputDecoration(
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    label: Text(
-                      'Date of birth',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 25.0),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                    hintText: 'YYYY-MM-DD',
-                    errorStyle: const TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Contact number cannot be empty!';
-                    }
-                    return null;
-                  },
-                  onSaved: (String? value) {
-                    registrationController.dob.value = value!;
-                  },
+                TextInputWidget(
+                  controller: _lnameController,
+                  label: 'Last Name',
+                  hintText: 'Enter your last name',
+                  validatorFn: lastNameValidationFn,
+                  onChanged: (String? value) {},
                 ),
                 const SizedBox(
                   height: 20.0,
                 ),
-                TextFormField(
-                  obscureText: false,
-                  decoration: InputDecoration(
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    label: Text(
-                      'Email',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 25.0),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                    hintText: 'lee@checkpointspot.asia',
-                    errorStyle: const TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email cannot be empty!';
-                    }
-                    return null;
-                  },
-                  onSaved: (String? value) {
-                    registrationController.email.value = value!;
-                  },
+                DateInputWidget(
+                  label: 'Date of birth',
+                  initialValue: DateTime.now(),
+                  initialDate: DateTime.now(),
+                  controller: _dobController,
                 ),
                 const SizedBox(
                   height: 20.0,
                 ),
-                TextFormField(
-                  obscureText: false,
-                  decoration: InputDecoration(
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    label: Text(
-                      'Contact No',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 25.0),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                    hintText: '+60123456789',
-                    errorStyle: const TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Contact number cannot be empty!';
-                    }
-                    return null;
-                  },
-                  onSaved: (String? value) {
-                    registrationController.contactNo.value = value!;
-                  },
+                TextInputWidget(
+                  controller: _emailController,
+                  label: 'Email',
+                  hintText: 'Enter your email',
+                  validatorFn: emailValidationFn,
+                  onChanged: (String? value) {},
                 ),
                 const SizedBox(
                   height: 20.0,
                 ),
-                TextFormField(
-                  obscureText: false,
-                  decoration: InputDecoration(
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    label: Text(
-                      'IC/Passport No',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 25.0),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                    hintText: 'CHCK1234567890',
-                    errorStyle: const TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Ic/Passport cannot be empty!';
-                    }
-                    return null;
-                  },
-                  onSaved: (String? value) {
-                    registrationController.icNo.value = value!;
-                  },
+                TextInputWidget(
+                  controller: _contactNoController,
+                  label: 'Contact No',
+                  hintText: 'Enter your contact number',
+                  validatorFn: contactNoValidationFn,
+                  onChanged: (String? value) {},
                 ),
                 const SizedBox(
                   height: 20.0,
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 5.0),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.transparent),
-                      color: const Color(0xfff2f3f8),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(8.0))),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: CountryListPick(
-                      appBar: AppBar(
-                        iconTheme: const IconThemeData(
-                          color: Colors.black,
-                        ),
-                        actions: const [],
-                        elevation: 0,
-                        shadowColor: Colors.transparent,
-                        backgroundColor: Colors.white,
-                        title: const Text('Select a country'),
-                      ),
-                      theme: CountryTheme(
-                        labelColor: Colors.black,
-                        isShowFlag: true,
-                        isShowTitle: true,
-                        isShowCode: false,
-                        isDownIcon: true,
-                        showEnglishName: true,
-                      ),
-                      initialSelection: 'MY',
-                      onChanged: (CountryCode? code) {
-                        registrationController.nationality.value =
-                            code != null ? code.code as String : '';
-                      },
-                      useUiOverlay: true,
-                      useSafeArea: false,
-                    ),
-                  ),
+                TextInputWidget(
+                  controller: _icNoController,
+                  label: 'IC/Passport No',
+                  hintText: 'Enter your IC/Passport number',
+                  validatorFn: icNoValidationFn,
+                  onChanged: (String? value) {},
                 ),
                 const SizedBox(
                   height: 20.0,
                 ),
-                Obx(() => Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        const Text(
-                          'Gender',
-                          style: TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.bold),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Text('Male'),
-                                Radio<String>(
-                                  value: 'M',
-                                  groupValue:
-                                      registrationController.gender.value,
-                                  onChanged: (String? value) {
-                                    registrationController.gender.value =
-                                        value!;
-                                  },
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Text('Female'),
-                                Radio<String>(
-                                  value: 'F',
-                                  groupValue:
-                                      registrationController.gender.value,
-                                  onChanged: (String? value) {
-                                    registrationController.gender.value =
-                                        value!;
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        )
-                      ],
-                    )),
+                CountrySelectorWidget(controller: _countryCodeController),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                GenderSelectorWidget(
+                    controller: _genderController,
+                    validationFn: genderValidationFn),
                 const SizedBox(
                   height: 40.0,
                 ),
@@ -366,25 +166,30 @@ class SignUpScreen extends StatelessWidget {
                         ),
                       );
 
-                      RegistrationEntry newRegistrationEntry =
-                          RegistrationEntry(
-                              cName: registrationController.fullName.value,
-                              cNationality:
-                                  registrationController.nationality.value,
-                              cIDNo: registrationController.icNo.value,
-                              dDOB: registrationController.dob.value,
-                              cGender: registrationController.gender.value,
-                              cContactNo:
-                                  registrationController.contactNo.value,
-                              cEmailAddress: registrationController.email.value,
-                              cUserID: registrationController.username.value);
+                      RegistrationEntry newRegistrationEntry = RegistrationEntry(
+                          cFirstName: _fnameController.text,
+                          cLastName: _lnameController.text,
+                          cName:
+                              '${_fnameController.text} ${_lnameController.text}',
+                          cNationality: _countryCodeController.text,
+                          cIDNo: _icNoController.text,
+                          dDOB: _dobController.text,
+                          cGender: _genderController.text.toLowerCase(),
+                          cContactNo: _contactNoController.text,
+                          cEmailAddress: _emailController.text,
+                          cUserID: _usernameController.text);
+
+                      print(newRegistrationEntry.toJson());
 
                       String? response;
+                      dio.Response? error;
+
                       try {
                         response =
                             await userController.signup(newRegistrationEntry);
-                      } on DioError catch (e) {
-                        print(e);
+                      } on dio.DioError catch (e) {
+                        error = e.response;
+                        // print(error?.data[0]['cErrorMessage']);
                       }
 
                       if (response != null) {

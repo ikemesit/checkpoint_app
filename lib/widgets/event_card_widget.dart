@@ -7,11 +7,11 @@ import 'package:line_icons/line_icons.dart';
 
 import '../checkpoint_theme.dart';
 
-class EventCard extends StatelessWidget {
+class EventCardWidget extends StatelessWidget {
   final CheckpointEvent event;
   final DateFormat formatter = DateFormat('yyyy-MM-dd');
 
-  EventCard({Key? key, required this.event}) : super(key: key);
+  EventCardWidget({Key? key, required this.event}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,9 +1,12 @@
 import 'package:checkpoint_app2/checkpoint_theme.dart';
 import 'package:checkpoint_app2/controllers/user_controller.dart';
 import 'package:checkpoint_app2/models/user.dart';
+import 'package:checkpoint_app2/screens/change_password_screen.dart';
 import 'package:checkpoint_app2/screens/forgot_password_screen.dart';
 import 'package:checkpoint_app2/screens/signup_screen.dart';
+import 'package:checkpoint_app2/shared/validation_functions.dart';
 import 'package:checkpoint_app2/widgets/loading_widget.dart';
+import 'package:checkpoint_app2/widgets/text_input_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/colors/gf_color.dart';
@@ -16,8 +19,8 @@ class LoginScreen extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final UserController userController = Get.put(UserController());
 
-  String? _username;
-  String? _password;
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   List<User> userData = [];
 
   @override
@@ -45,63 +48,28 @@ class LoginScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    'Login User',
+                    'Login',
                     style: CheckpointTheme.lightTextTheme.headline2,
                   ),
                   const SizedBox(
                     height: 20.0,
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 25.0),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                      hintText: 'Enter your Username',
-                      errorStyle: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Invalid username!';
-                      }
-                      return null;
-                    },
-                    onSaved: (String? value) {
-                      _username = value;
-                    },
-                  ),
+                  TextInputWidget(
+                      label: 'Username',
+                      hintText: 'Enter your username',
+                      validatorFn: usernameValidationFn,
+                      onChanged: (String? value) {},
+                      controller: _usernameController),
                   const SizedBox(
                     height: 20.0,
                   ),
-                  TextFormField(
+                  TextInputWidget(
+                    label: 'Password',
+                    hintText: 'Enter your password',
+                    validatorFn: passwordValidationFn,
+                    onChanged: (String? value) {},
+                    controller: _passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 25.0),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                      hintText: 'Enter your password',
-                      errorStyle: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Invalid password!';
-                      }
-                      return null;
-                    },
-                    onSaved: (String? value) {
-                      _password = value;
-                    },
                   ),
                   const SizedBox(
                     height: 40.0,
@@ -133,9 +101,10 @@ class LoginScreen extends StatelessWidget {
                         );
 
                         var user = await userController.login(
-                            _username as String, _password as String);
+                            _usernameController.text, _passwordController.text);
 
                         if (user != null && user.isNotEmpty) {
+                          print(user[0].bFirstTime);
                           Navigator.pop(context);
                           GFToast.showToast('Login Successful!', context,
                               toastPosition: GFToastPosition.BOTTOM,
@@ -151,6 +120,11 @@ class LoginScreen extends StatelessWidget {
                               ));
 
                           await Future.delayed(const Duration(seconds: 2), () {
+                            if (user[0].bFirstTime != null &&
+                                user[0].bFirstTime == true) {
+                              Get.off(() => ChangePasswordScreen(),
+                                  fullscreenDialog: true);
+                            }
                             Navigator.pop(context);
                           });
                         } else {

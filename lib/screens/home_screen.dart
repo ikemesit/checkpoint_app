@@ -1,4 +1,5 @@
 import 'package:checkpoint_app2/checkpoint_theme.dart';
+import 'package:checkpoint_app2/controllers/authentication_controller.dart';
 import 'package:checkpoint_app2/controllers/navigation_controller.dart';
 import 'package:checkpoint_app2/screens/activity_screen.dart';
 import 'package:checkpoint_app2/screens/events_screen.dart';
@@ -72,6 +73,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final pageController = Get.put(NavigationController());
+    final AuthenticationController _authenticationController =
+        Get.put(AuthenticationController());
+
     return GetBuilder<NavigationController>(
       builder: (pageController) {
         return Scaffold(

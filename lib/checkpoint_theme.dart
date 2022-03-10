@@ -21,7 +21,7 @@ class CheckpointTheme {
     ),
     headline2: GoogleFonts.quicksand(
       fontSize: 30.0,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w900,
       color: Colors.black,
     ),
     headline3: GoogleFonts.quicksand(
@@ -31,12 +31,12 @@ class CheckpointTheme {
     ),
     headline4: GoogleFonts.quicksand(
       fontSize: 18.0,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.bold,
       color: Colors.black,
     ),
     headline5: GoogleFonts.quicksand(
       fontSize: 16.0,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.bold,
       color: Colors.black,
     ),
   );
@@ -83,7 +83,7 @@ class CheckpointTheme {
       primaryColor: Colors.white,
       brightness: Brightness.light,
       primaryTextTheme: lightTextTheme,
-      scaffoldBackgroundColor: const Color(0xfff2f3f8),
+      scaffoldBackgroundColor: Colors.white, // const Color(0xfff2f3f8),
       checkboxTheme: CheckboxThemeData(
         fillColor: MaterialStateColor.resolveWith(
           (states) {

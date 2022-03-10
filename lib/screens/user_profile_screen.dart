@@ -18,9 +18,9 @@ class UserProfileScreen extends StatelessWidget {
 
   UserProfileScreen({Key? key, required this.title}) : super(key: key);
 
-  final UserController userController = Get.put(UserController());
+  final UserController userController = Get.find<UserController>();
   final AuthenticationController authController =
-      Get.put(AuthenticationController());
+      Get.find<AuthenticationController>();
 
   logoutUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

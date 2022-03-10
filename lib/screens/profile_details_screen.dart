@@ -2,9 +2,13 @@ import 'package:checkpoint_app2/checkpoint_theme.dart';
 import 'package:checkpoint_app2/controllers/user_controller.dart';
 import 'package:checkpoint_app2/models/partial_user.dart';
 import 'package:checkpoint_app2/widgets/loading_widget.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:line_icons/line_icons.dart';
 
 class ProfileDetailsScreen extends StatelessWidget {
@@ -105,23 +109,23 @@ class ProfileDetailsScreen extends StatelessWidget {
             key: _formKey,
             child: ListView(
               padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                  const EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
               children: [
+                Text('First Name',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: fNameController,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'First Name',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                     hintText: 'Enter your First Name',
-                    errorStyle: const TextStyle(
+                    errorStyle: TextStyle(
                       color: Colors.red,
                       fontWeight: FontWeight.bold,
                     ),
@@ -130,30 +134,32 @@ class ProfileDetailsScreen extends StatelessWidget {
                     if (value == null || value.isEmpty) {
                       return 'Field should not be empty!';
                     }
+
+                    if (value.length > 100) {
+                      return 'Field should not be more than 100 characters!';
+                    }
                     return null;
                   },
                   onSaved: (String? value) {
                     // _username = value;
                   },
                 ),
-                const SizedBox(
-                  height: 40.0,
-                ),
+                const SizedBox(height: 25.0),
+                Text('Last Name',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: lNameController,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Last Name',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                     hintText: 'Enter your Last Name',
-                    errorStyle: const TextStyle(
+                    errorStyle: TextStyle(
                       color: Colors.red,
                       fontWeight: FontWeight.bold,
                     ),
@@ -162,30 +168,33 @@ class ProfileDetailsScreen extends StatelessWidget {
                     if (value == null || value.isEmpty) {
                       return 'Field should not be empty!';
                     }
+
+                    if (value.length > 100) {
+                      return 'Field should not be more than 100 characters!';
+                    }
                     return null;
                   },
                   onSaved: (String? value) {
                     // _username = value;
                   },
                 ),
-                const SizedBox(
-                  height: 40.0,
-                ),
+                const SizedBox(height: 25.0),
+                Text('Email', style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: emailController,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Email',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.email),
+                    prefixIconColor: Colors.black,
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                     hintText: 'Enter your email',
-                    errorStyle: const TextStyle(
+                    errorStyle: TextStyle(
                       color: Colors.red,
                       fontWeight: FontWeight.bold,
                     ),
@@ -194,30 +203,37 @@ class ProfileDetailsScreen extends StatelessWidget {
                     if (value == null || value.isEmpty) {
                       return 'Field should not be empty!';
                     }
+
+                    if (value.length > 100) {
+                      return 'Field should not be more than 100 characters!';
+                    }
+
+                    if (EmailValidator.validate(value) != true) {
+                      return 'Please enter a valid email!';
+                    }
                     return null;
                   },
                   onSaved: (String? value) {
                     // _username = value;
                   },
                 ),
-                const SizedBox(
-                  height: 40.0,
-                ),
+                const SizedBox(height: 25.0),
+                Text('Contact Number',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: contactController,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Contact No',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.red,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.phone),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                     hintText: 'Enter your Contact Number',
-                    errorStyle: const TextStyle(
+                    errorStyle: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -226,6 +242,15 @@ class ProfileDetailsScreen extends StatelessWidget {
                     if (value == null || value.isEmpty) {
                       return 'Field should not be empty!';
                     }
+
+                    if (value.length > 20) {
+                      return 'Field must not be more than 20 characters!';
+                    }
+
+                    if (value.isNumericOnly != true) {
+                      return 'Field must only contain numeric characters!';
+                    }
+
                     return null;
                   },
                   onSaved: (String? value) {
@@ -233,308 +258,351 @@ class ProfileDetailsScreen extends StatelessWidget {
                   },
                 ),
                 const SizedBox(
-                  height: 40.0,
+                  height: 25.0,
                 ),
+                Text('Emergency Contact Number',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cEmerContactNo,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Emergency Contact No',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.phone),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                     hintText: 'Enter your Emergency Contact No',
+                    errorStyle: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Field should not be empty!';
+                    }
+
+                    if (value.length > 100) {
+                      return 'Field should not be more than 100 characters!';
+                    }
+
+                    if (EmailValidator.validate(value) != true) {
+                      return 'Please enter a valid email!';
+                    }
+                    return null;
+                  },
+                  onSaved: (String? value) {
+                    // _username = value;
+                  },
                 ),
                 const SizedBox(
-                  height: 40.0,
+                  height: 25.0,
                 ),
+                Text('Address (Line 1)',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cAddress1,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Address (Line 1)',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                     hintText: 'Enter your Address',
+                    errorStyle: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Field should not be empty!';
+                    }
+
+                    if (value.length > 100) {
+                      return 'Field should not be more than 100 characters!';
+                    }
+                    return null;
+                  },
+                  onSaved: (String? value) {
+                    // _username = value;
+                  },
                 ),
                 const SizedBox(
-                  height: 40.0,
+                  height: 25.0,
                 ),
+                Text('Address (Line 2)',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cAddress2,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Address (Line 2)',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   ),
                 ),
                 const SizedBox(
-                  height: 40.0,
+                  height: 25.0,
                 ),
+                Text('Address (Line 3)',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cAddress3,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Address (Line 3)',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   ),
                 ),
                 const SizedBox(
-                  height: 40.0,
+                  height: 25.0,
                 ),
-                TextFormField(
-                  initialValue: userController.userList[0].dDOB,
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Date of Birth',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                Text('Date of birth',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
+                FormBuilderDateTimePicker(
+                  name: 'Date of birth',
+                  onChanged: (DateTime? dateTime) {
+                    print(Jiffy(dateTime).format("yyyy-MM-dd"));
+                    // return Jiffy(dateTime, "yyyy-MM-dd");
+                  },
+                  inputType: InputType.date,
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   ),
+                  format: DateFormat("yyyy-MM-dd"),
+                  initialDate: DateTime.now(),
+                  initialValue: Jiffy(userController.userList[0].dDOB).dateTime,
+                  valueTransformer: (DateTime? dateTime) {
+                    return Jiffy(dateTime).format("yyyy-MM-dd");
+                  },
                 ),
-                const SizedBox(
-                  height: 40.0,
-                ),
+                // TextFormField(
+                //   initialValue: userController.userList[0].dDOB,
+                //   readOnly: true,
+                //   decoration: InputDecoration(
+                //     label: Text(
+                //       'Date of Birth',
+                //       style: CheckpointTheme.lightTextTheme.headline5,
+                //     ),
+                //     contentPadding: const EdgeInsets.symmetric(
+                //         vertical: 10.0, horizontal: 15.0),
+                //     filled: false,
+                //     fillColor: Colors.white,
+                //     border: const OutlineInputBorder(
+                //         borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                //   ),
+                // ),
+                const SizedBox(height: 25.0),
+                Text('Post Code',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cPostCode,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Post Code',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   ),
                 ),
-                const SizedBox(
-                  height: 40.0,
-                ),
+                const SizedBox(height: 25.0),
+                Text('City', style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cCity,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'City',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   ),
                 ),
-                const SizedBox(
-                  height: 40.0,
-                ),
+                const SizedBox(height: 25.0),
+                Text('State', style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cStateCode,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'State',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   ),
                 ),
-                const SizedBox(
-                  height: 40.0,
-                ),
+                const SizedBox(height: 25.0),
+                Text('Country',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cCountryCode,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Country',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   ),
                 ),
-                const SizedBox(
-                  height: 40.0,
-                ),
+                const SizedBox(height: 25.0),
+                Text('Emergency Contact Name',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cEmerContactName,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Emergency Contact Name',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   ),
                 ),
-                const SizedBox(
-                  height: 40.0,
-                ),
+                const SizedBox(height: 25.0),
+                Text('Emergency Contact Relation',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cEmerContactRel,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Emergency Contact Relation',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   ),
                 ),
-                const SizedBox(
-                  height: 40.0,
-                ),
+                const SizedBox(height: 25.0),
+                Text('Existing medical conditions',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cMedicalCondition,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Existing medical conditions',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   ),
                 ),
-                const SizedBox(
-                  height: 40.0,
-                ),
+                const SizedBox(height: 25.0),
+                Text('Receiver Name',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cReceiverName,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Receiver Name',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   ),
                 ),
-                const SizedBox(
-                  height: 40.0,
-                ),
+                const SizedBox(height: 25.0),
+                Text('Delivery Address (Line 1)',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cDeliveryAddress1,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Delivery Address (Line 1)',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   ),
                 ),
                 const SizedBox(
-                  height: 40.0,
+                  height: 25.0,
                 ),
+                Text('Delivery Address (Line 2)',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cDeliveryAddress2,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Delivery Address (Line 2)',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   ),
                 ),
-                const SizedBox(
-                  height: 40.0,
-                ),
+                const SizedBox(height: 25.0),
+                Text('Delivery Address (Line 3)',
+                    style: CheckpointTheme.lightTextTheme.headline5),
+                const SizedBox(height: 10),
                 TextFormField(
                   initialValue: userController.userList[0].cDeliveryAddress3,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    label: Text(
-                      'Delivery Address (Line 3)',
-                      style: CheckpointTheme.lightTextTheme.headline5,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 15.0),
-                    filled: false,
-                    fillColor: Colors.white,
-                    border: const OutlineInputBorder(
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    filled: true,
+                    fillColor: Colors.black12,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   ),
                 ),
