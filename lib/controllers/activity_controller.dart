@@ -9,5 +9,7 @@ class ActivityController extends GetxController {
   RxString timeTrackingStarted = ''.obs;
   RxString timeTrackingEnded = ''.obs;
   RxInt stepsTaken = 0.obs;
-  RxString timeElasped = '00:00:00'.obs;
+  RxString timeElasped = '00:00:00:00'.obs;
+  RxBool isTrackingPaused = false.obs;
+  RxInt rawTime = 0.obs;
 }

@@ -4,74 +4,74 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CheckpointTheme {
   static TextTheme lightTextTheme = TextTheme(
-    bodyText1: GoogleFonts.quicksand(
+    bodyText1: GoogleFonts.inter(
       fontSize: 14.0,
       fontWeight: FontWeight.w600,
       color: Colors.black,
     ),
-    bodyText2: GoogleFonts.quicksand(
+    bodyText2: GoogleFonts.inter(
       fontSize: 16.0,
       fontWeight: FontWeight.normal,
       color: Colors.black,
     ),
-    headline1: GoogleFonts.quicksand(
+    headline1: GoogleFonts.inter(
       fontSize: 36.0,
       fontWeight: FontWeight.bold,
       color: Colors.black,
     ),
-    headline2: GoogleFonts.quicksand(
+    headline2: GoogleFonts.inter(
       fontSize: 30.0,
       fontWeight: FontWeight.w900,
       color: Colors.black,
     ),
-    headline3: GoogleFonts.quicksand(
+    headline3: GoogleFonts.inter(
       fontSize: 24.0,
       fontWeight: FontWeight.bold,
       color: Colors.black,
     ),
-    headline4: GoogleFonts.quicksand(
+    headline4: GoogleFonts.inter(
       fontSize: 18.0,
       fontWeight: FontWeight.bold,
       color: Colors.black,
     ),
-    headline5: GoogleFonts.quicksand(
+    headline5: GoogleFonts.inter(
       fontSize: 16.0,
       fontWeight: FontWeight.bold,
       color: Colors.black,
     ),
   );
   static TextTheme darkTextTheme = TextTheme(
-    bodyText1: GoogleFonts.poppins(
+    bodyText1: GoogleFonts.inter(
       fontSize: 14.0,
       fontWeight: FontWeight.w600,
       color: Colors.white,
     ),
-    bodyText2: GoogleFonts.poppins(
+    bodyText2: GoogleFonts.inter(
       fontSize: 16.0,
       fontWeight: FontWeight.normal,
       color: Colors.white,
     ),
-    headline1: GoogleFonts.poppins(
+    headline1: GoogleFonts.inter(
       fontSize: 36.0,
       fontWeight: FontWeight.bold,
       color: Colors.white,
     ),
-    headline2: GoogleFonts.poppins(
+    headline2: GoogleFonts.inter(
       fontSize: 30.0,
       fontWeight: FontWeight.bold,
       color: Colors.white,
     ),
-    headline3: GoogleFonts.poppins(
+    headline3: GoogleFonts.inter(
       fontSize: 24.0,
       fontWeight: FontWeight.bold,
       color: Colors.white,
     ),
-    headline4: GoogleFonts.poppins(
+    headline4: GoogleFonts.inter(
       fontSize: 18.0,
       fontWeight: FontWeight.bold,
       color: Colors.white,
     ),
-    headline5: GoogleFonts.poppins(
+    headline5: GoogleFonts.inter(
       fontSize: 16.0,
       fontWeight: FontWeight.w500,
       color: Colors.white,

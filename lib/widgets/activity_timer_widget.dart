@@ -5,7 +5,10 @@ import 'package:get/get.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class ActivityTimerWidget extends StatefulWidget {
-  const ActivityTimerWidget({Key? key}) : super(key: key);
+  // final bool pauseTimer;
+  final String? presetTime;
+
+  const ActivityTimerWidget({Key? key, this.presetTime}) : super(key: key);
 
   @override
   State<ActivityTimerWidget> createState() => _ActivityTimerWidgetState();
@@ -14,8 +17,9 @@ class ActivityTimerWidget extends StatefulWidget {
 class _ActivityTimerWidgetState extends State<ActivityTimerWidget> {
   final ActivityController _mapWidgetController =
       Get.find<ActivityController>();
+
   final StopWatchTimer _stopWatchTimer = StopWatchTimer();
-  String displayTime = '00:00:00';
+  late String displayTime;
 
   @override
   void initState() {
@@ -37,26 +41,40 @@ class _ActivityTimerWidgetState extends State<ActivityTimerWidget> {
     });
   }
 
+  Future<void> pauseTimer() async {
+    await Future.delayed(const Duration(seconds: 1), () {
+      _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (widget.presetTime != null) {
+      displayTime = widget.presetTime!;
+    } else {
+      displayTime = '00:00:00:00';
+    }
+
     return StreamBuilder<int>(
-      stream: _stopWatchTimer.rawTime,
-      initialData: 0,
-      builder: (context, snap) {
-        final value = snap.data;
-        displayTime = StopWatchTimer.getDisplayTime(value!);
-        return Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                displayTime,
-                style: CheckpointTheme.lightTextTheme.headline2,
+        stream: _stopWatchTimer.rawTime,
+        initialData: 0,
+        builder: (context, snap) {
+          final value = snap.data;
+          displayTime = StopWatchTimer.getDisplayTime(value!);
+          _mapWidgetController
+              .timeElasped(StopWatchTimer.getDisplayTime(value));
+
+          return Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  displayTime,
+                  style: CheckpointTheme.lightTextTheme.headline2,
+                ),
               ),
-            ),
-          ],
-        );
-      },
-    );
+            ],
+          );
+        });
   }
 }

@@ -1,7 +1,8 @@
 import 'package:checkpoint_app2/controllers/activity_controller.dart';
 import 'package:checkpoint_app2/controllers/user_controller.dart';
-import 'package:checkpoint_app2/screens/user_profile_screen.dart';
+import 'package:checkpoint_app2/enums/activityChoices.dart';
 import 'package:checkpoint_app2/widgets/activity_timer_widget.dart';
+import 'package:checkpoint_app2/widgets/app_bar_widget.dart';
 import 'package:checkpoint_app2/widgets/live_map_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +11,6 @@ import 'package:location/location.dart';
 
 import '../checkpoint_theme.dart';
 import 'activity_save_screen.dart';
-import 'notifications_screen.dart';
 
 class LiveTrackingScreen extends StatelessWidget {
   LiveTrackingScreen({Key? key}) : super(key: key);
@@ -24,13 +24,14 @@ class LiveTrackingScreen extends StatelessWidget {
     final Future<LocationData> currentLocation = location.getLocation();
 
     Icon getActivityIcon() {
-      if (_userController.activityChoice.value == 0) {
+      if (_userController.activityChoice.value == ActivityChoices.walking) {
         return const Icon(
           LineIcons.walking,
           size: 48.0,
           color: Colors.white,
         );
-      } else if (_userController.activityChoice.value == 1) {
+      } else if (_userController.activityChoice.value ==
+          ActivityChoices.running) {
         return const Icon(
           LineIcons.running,
           size: 48.0,
@@ -46,50 +47,7 @@ class LiveTrackingScreen extends StatelessWidget {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Live Activity Tracking',
-            style: CheckpointTheme.darkTextTheme.headline4,
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NotificationsScreen(),
-                  ),
-                );
-              },
-              icon: const Icon(LineIcons.bell),
-              color: Colors.white,
-            ),
-            Obx(() {
-              if (_userController.isLoggedIn.value == true) {
-                return IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            UserProfileScreen(title: 'User Profile'),
-                      ),
-                    );
-                  },
-                  icon: const CircleAvatar(
-                      backgroundImage: AssetImage('assets/images/trophy1.jpg'),
-                      radius: 12.0),
-                  color: Colors.white,
-                );
-              } else {
-                return const Visibility(
-                  child: Spacer(),
-                  visible: false,
-                );
-              }
-            })
-          ],
-        ),
+        appBar: AppBarWidget(title: 'Live Activity Tracking'),
         body: FutureBuilder<LocationData>(
             future: currentLocation,
             builder:
@@ -104,7 +62,7 @@ class LiveTrackingScreen extends StatelessWidget {
                       bottom: 10.0,
                       child: Container(
                         padding: const EdgeInsets.all(20.0),
-                        height: 320.0,
+                        height: 280.0,
                         width: Get.width - 20.0,
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -131,69 +89,79 @@ class LiveTrackingScreen extends StatelessWidget {
                                   const SizedBox(
                                     width: 30.0,
                                   ),
-                                  const ActivityTimerWidget()
+                                  _mapWidgetController.isTrackingPaused.value ==
+                                          true
+                                      ? Text(
+                                          _mapWidgetController
+                                              .timeElasped.value,
+                                          style: CheckpointTheme
+                                              .lightTextTheme.headline2,
+                                        )
+                                      : ActivityTimerWidget(
+                                          presetTime: _mapWidgetController
+                                              .timeElasped.value)
                                 ],
                               ),
                               const Divider(),
                               const SizedBox(
                                 height: 20.0,
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Elevation',
-                                          style: CheckpointTheme
-                                              .lightTextTheme.headline5),
-                                      const SizedBox(
-                                        width: 10.0,
-                                      ),
-                                      Text(
-                                          _mapWidgetController.altitude.value
-                                              .toStringAsFixed(3),
-                                          style: CheckpointTheme
-                                              .lightTextTheme.bodyText2)
-                                    ],
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Latitude',
-                                          style: CheckpointTheme
-                                              .lightTextTheme.headline5),
-                                      const SizedBox(
-                                        width: 10.0,
-                                      ),
-                                      Text(_mapWidgetController.latitude.value,
-                                          style: CheckpointTheme
-                                              .lightTextTheme.bodyText2)
-                                    ],
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Longitude',
-                                          style: CheckpointTheme
-                                              .lightTextTheme.headline5),
-                                      const SizedBox(
-                                        width: 10.0,
-                                      ),
-                                      Text(_mapWidgetController.longitude.value,
-                                          style: CheckpointTheme
-                                              .lightTextTheme.bodyText2)
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10.0,
-                              ),
+                              // Row(
+                              //   mainAxisAlignment:
+                              //       MainAxisAlignment.spaceBetween,
+                              //   children: [
+                              //     Column(
+                              //       crossAxisAlignment:
+                              //           CrossAxisAlignment.start,
+                              //       children: [
+                              //         Text('Elevation',
+                              //             style: CheckpointTheme
+                              //                 .lightTextTheme.headline5),
+                              //         const SizedBox(
+                              //           width: 10.0,
+                              //         ),
+                              //         Text(
+                              //             _mapWidgetController.altitude.value
+                              //                 .toStringAsFixed(3),
+                              //             style: CheckpointTheme
+                              //                 .lightTextTheme.bodyText2)
+                              //       ],
+                              //     ),
+                              //     Column(
+                              //       crossAxisAlignment:
+                              //           CrossAxisAlignment.start,
+                              //       children: [
+                              //         Text('Latitude',
+                              //             style: CheckpointTheme
+                              //                 .lightTextTheme.headline5),
+                              //         const SizedBox(
+                              //           width: 10.0,
+                              //         ),
+                              //         Text(_mapWidgetController.latitude.value,
+                              //             style: CheckpointTheme
+                              //                 .lightTextTheme.bodyText2)
+                              //       ],
+                              //     ),
+                              //     Column(
+                              //       crossAxisAlignment:
+                              //           CrossAxisAlignment.start,
+                              //       children: [
+                              //         Text('Longitude',
+                              //             style: CheckpointTheme
+                              //                 .lightTextTheme.headline5),
+                              //         const SizedBox(
+                              //           width: 10.0,
+                              //         ),
+                              //         Text(_mapWidgetController.longitude.value,
+                              //             style: CheckpointTheme
+                              //                 .lightTextTheme.bodyText2)
+                              //       ],
+                              //     ),
+                              //   ],
+                              // ),
+                              // const SizedBox(
+                              //   height: 10.0,
+                              // ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -209,10 +177,8 @@ class LiveTrackingScreen extends StatelessWidget {
                                       ),
                                       Text(
                                           _mapWidgetController.distance.value
-                                                  .toStringAsFixed(3) +
+                                                  .toStringAsFixed(2) +
                                               'm',
-                                          // _mapWidgetController.stepsTaken.value
-                                          //     .toString(),
                                           style: CheckpointTheme
                                               .lightTextTheme.bodyText2)
                                     ],
@@ -243,32 +209,50 @@ class LiveTrackingScreen extends StatelessWidget {
                               const SizedBox(
                                 height: 20.0,
                               ),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  // showDialog(
-                                  //   context: context,
-                                  //   barrierDismissible: false,
-                                  //   builder: (context) => const LoadingWidget(
-                                  //     stateText: 'Saving Session',
-                                  //   ),
-                                  // );
+                              _mapWidgetController.isTrackingPaused.value ==
+                                      true
+                                  ? ElevatedButton(
+                                      onPressed: () async {
+                                        _mapWidgetController
+                                            .isTrackingPaused(false);
+                                      },
+                                      child: Text(
+                                        'Continue Tracking',
+                                        style: CheckpointTheme
+                                            .darkTextTheme.headline5,
+                                      ),
+                                    )
+                                  : ElevatedButton(
+                                      onLongPress: () async {
+                                        // showDialog(
+                                        //   context: context,
+                                        //   barrierDismissible: false,
+                                        //   builder: (context) => const LoadingWidget(
+                                        //     stateText: 'Saving Session',
+                                        //   ),
+                                        // );
 
-                                  // await Future.delayed(
-                                  //     const Duration(seconds: 2), () {
-                                  //   Navigator.pop(context);
-                                  //   Get.back(closeOverlays: true);
-                                  // });
-                                  Get.off(() => const ActivitySaveScreen(),
-                                      fullscreenDialog: true,
-                                      transition: Transition.rightToLeft);
-                                  // Get.back(closeOverlays: true);
-                                },
-                                child: Text(
-                                  'Stop Tracking',
-                                  style:
-                                      CheckpointTheme.darkTextTheme.headline5,
-                                ),
-                              ),
+                                        // await Future.delayed(
+                                        //     const Duration(seconds: 2), () {
+                                        //   Navigator.pop(context);
+                                        //   Get.back(closeOverlays: true);
+                                        // });
+                                        Get.off(
+                                            () => const ActivitySaveScreen(),
+                                            fullscreenDialog: true,
+                                            transition: Transition.rightToLeft);
+                                        // Get.back(closeOverlays: true);
+                                      },
+                                      onPressed: () {
+                                        _mapWidgetController
+                                            .isTrackingPaused(true);
+                                      },
+                                      child: Text(
+                                        'Tap to pause Tracking or Hold to end',
+                                        style: CheckpointTheme
+                                            .darkTextTheme.headline5,
+                                      ),
+                                    )
                             ],
                           ),
                         ),

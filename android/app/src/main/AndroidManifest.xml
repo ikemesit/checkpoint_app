@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
    <application
         android:label="checkpoint_app2"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
        <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="AIzaSyDfYy9JovU1we00qR3PZQt3dx_imneouds"/>
         <activity

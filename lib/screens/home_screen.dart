@@ -3,7 +3,7 @@ import 'package:checkpoint_app2/controllers/authentication_controller.dart';
 import 'package:checkpoint_app2/controllers/navigation_controller.dart';
 import 'package:checkpoint_app2/screens/activity_screen.dart';
 import 'package:checkpoint_app2/screens/events_screen.dart';
-import 'package:checkpoint_app2/screens/settings_screen.dart';
+import 'package:checkpoint_app2/screens/leaderboard_screen.dart';
 import 'package:checkpoint_app2/screens/track_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -83,9 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
             index: pageController.tabIndex,
             children: [
               const EventsScreen(),
-              TrackScreen(),
+              const TrackScreen(),
               ActivityScreen(),
-              SettingsScreen(),
+              LeaderboardScreen(),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(
@@ -109,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
               BottomNavigationBarItem(
                   icon: Icon(LineIcons.areaChart), label: 'Activity'),
               BottomNavigationBarItem(
-                  icon: Icon(LineIcons.cog), label: 'Settings'),
+                  icon: Icon(LineIcons.cog), label: 'Leaderboard'),
             ],
           ),
         );

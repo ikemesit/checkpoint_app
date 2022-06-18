@@ -13,13 +13,13 @@ class NotificationCardWidget extends StatelessWidget {
       child: InkWell(
         onTap: () {},
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Some event title here',
+                'Notification title',
                 style:
                     TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),

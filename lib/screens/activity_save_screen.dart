@@ -2,6 +2,7 @@ import 'package:checkpoint_app2/components/text_input.dart';
 import 'package:checkpoint_app2/controllers/activity_controller.dart';
 import 'package:checkpoint_app2/screens/activity_screen.dart';
 import 'package:checkpoint_app2/widgets/loading_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,9 +15,26 @@ class ActivitySaveScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final ActivityController _mapWidgetController =
         Get.find<ActivityController>();
+    CollectionReference activities =
+        FirebaseFirestore.instance.collection('leaderboardResults');
 
+    TextEditingController nameController = TextEditingController();
     TextEditingController activityLabelController = TextEditingController();
     TextEditingController descriptionController = TextEditingController();
+
+    Future<void> saveActivity() {
+      return activities
+          .add({
+            'name': nameController.text,
+            'label': activityLabelController.text,
+            'description': descriptionController.text,
+            'time': _mapWidgetController.timeElasped.value,
+            'distanceCovered': _mapWidgetController.distance.value,
+            'dateTime': Timestamp.fromDate(DateTime.now())
+          })
+          .then((value) => print("Result Added"))
+          .catchError((error) => print("Failed to add user: $error"));
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -67,7 +85,7 @@ class ActivitySaveScreen extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Distace covered',
+                      Text('Distance covered',
                           style: CheckpointTheme.lightTextTheme.headline5),
                       const SizedBox(
                         width: 10.0,
@@ -80,6 +98,23 @@ class ActivitySaveScreen extends StatelessWidget {
               ),
               const SizedBox(
                 height: 20.0,
+              ),
+              Text(
+                'Name',
+                style: CheckpointTheme.lightTextTheme.headline4,
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              TextInput(
+                label: 'Label',
+                hintText: 'Please enter your name',
+                errorMsg: '',
+                onSaved: (String? value) {},
+                controller: nameController,
+              ),
+              const SizedBox(
+                height: 30.0,
               ),
               Text(
                 'Title',
@@ -129,6 +164,7 @@ class ActivitySaveScreen extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () async {
+                      await saveActivity();
                       showDialog(
                         context: context,
                         barrierDismissible: false,

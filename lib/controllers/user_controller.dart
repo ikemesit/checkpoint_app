@@ -1,3 +1,4 @@
+import 'package:checkpoint_app2/enums/activityChoices.dart';
 import 'package:checkpoint_app2/models/logout_response.dart';
 import 'package:checkpoint_app2/models/partial_user.dart';
 import 'package:checkpoint_app2/models/registration_entry.dart';
@@ -11,9 +12,9 @@ class UserController extends GetxController {
   RxBool isLoading = false.obs;
   RxList userList = <User>[].obs;
   RxBool trackScreenLoaded = false.obs;
-  RxInt activityChoice = 1.obs;
+  Rx<ActivityChoices> activityChoice = ActivityChoices.walking.obs;
 
-  var activityChoices = <int, String>{0: 'WALKING', 1: 'RUNNING', 2: 'CYCLING'};
+  // var activityChoices = <int, String>{0: 'WALKING', 1: 'RUNNING', 2: 'CYCLING'};
 
   Future<List<User>?> login(String username, String password) async {
     isLoading.toggle();

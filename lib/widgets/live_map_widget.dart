@@ -8,11 +8,12 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:latlong2/latlong.dart' as lt;
 import 'package:location/location.dart';
 import 'package:maps_toolkit/maps_toolkit.dart' as mp;
 import 'package:sensors_plus/sensors_plus.dart';
 
-const double cameraZoom = 18;
+const double cameraZoom = 14.0;
 const double cameraTilt = 0;
 const double cameraBearing = 30;
 const LatLng sourceLocation = LatLng(42.747932, -71.167889);
@@ -47,7 +48,8 @@ class _LiveMapWidgetState extends State<LiveMapWidget> {
   double distance = 0.0;
   late String timeEnded;
   late StreamSubscription<UserAccelerometerEvent> _userAccelerometerEventStream;
-  double xAxisAcceleration = 0.0;
+  double zAxisAcceleration = 0.0;
+  final lt.Distance latLngDistance = const lt.Distance();
 
   @override
   void initState() {
@@ -75,6 +77,7 @@ class _LiveMapWidgetState extends State<LiveMapWidget> {
     locationStream = location.onLocationChanged.listen((LocationData cLoc) {
       currentLocation = cLoc;
       updatePinOnMap();
+      setPolylines();
 
       _mapWidgetController.latitude(currentLocation?.latitude.toString());
       _mapWidgetController.longitude(currentLocation?.longitude.toString());
@@ -176,8 +179,8 @@ class _LiveMapWidgetState extends State<LiveMapWidget> {
   void initUserAccelerometerStream() {
     _userAccelerometerEventStream =
         userAccelerometerEvents.listen((UserAccelerometerEvent event) {
-      xAxisAcceleration = event.x;
-      print(xAxisAcceleration);
+      zAxisAcceleration = event.z;
+      // print(zAxisAcceleration);
     });
   }
 
@@ -194,8 +197,22 @@ class _LiveMapWidgetState extends State<LiveMapWidget> {
     var to =
         mp.LatLng(currPoint.latitude as double, currPoint.longitude as double);
 
-    if (xAxisAcceleration > 1.4) {
-      distance += mp.SphericalUtil.computeDistanceBetween(from, to) / 10;
+    if (zAxisAcceleration < -0.5) {
+      print(latLngDistance.as(
+          lt.LengthUnit.Meter,
+          lt.LatLng(
+              prevPoint.latitude as double, prevPoint.longitude as double),
+          lt.LatLng(
+              currPoint.latitude as double, currPoint.longitude as double)));
+
+      distance += latLngDistance.as(
+          lt.LengthUnit.Meter,
+          lt.LatLng(
+              prevPoint.latitude as double, prevPoint.longitude as double),
+          lt.LatLng(
+              currPoint.latitude as double,
+              currPoint.longitude
+                  as double)); //mp.SphericalUtil.computeDistanceBetween(from, to) / 10;
     }
 
     _mapWidgetController.distance(distance);

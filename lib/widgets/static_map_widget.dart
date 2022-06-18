@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
-const double cameraZoom = 18;
+const double cameraZoom = 14.0;
 const double cameraTilt = 0;
 const double cameraBearing = 30;
 const LatLng sourceLocation = LatLng(42.747932, -71.167889);
